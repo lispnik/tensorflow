@@ -84,7 +84,6 @@
 
 (defvar *test-images* '("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Blue_cup_of_coffee.svg/500px-Blue_cup_of_coffee.svg.png"
 			"https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Sport_car_rim.svg/500px-Sport_car_rim.svg.png"
-			"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/PEO-car.svg/500px-PEO-car.svg.png"
 			"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Perseus1Hfx.png/480px-Perseus1Hfx.png"
 			"https://upload.wikimedia.org/wikipedia/commons/7/77/Avatar_cat.png"))
 

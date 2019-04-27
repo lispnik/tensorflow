@@ -11,7 +11,7 @@
 (in-package #:tensorflow.protobuf)
 (cl:declaim #.com.google.base:*optimize-default*)
 
-(cl:defclass resource-handle (pb:protocol-buffer)
+(cl:defclass resource-handle-proto (pb:protocol-buffer)
   (
   (device
    :accessor device
@@ -42,24 +42,24 @@
    :type (cl:integer 0 #.(cl:1- cl:array-dimension-limit)))
   ))
 
-(cl:export 'resource-handle)
+(cl:export 'resource-handle-proto)
 
 (cl:export 'device)
 
 
-(cl:defmethod (cl:setf device) :after (x (self resource-handle))
+(cl:defmethod (cl:setf device) :after (x (self resource-handle-proto))
   (cl:declare (cl:ignore x))
   (cl:setf (cl:ldb (cl:byte 1 0) (cl:slot-value self '%has-bits%)) 1))
 
 (cl:unless (cl:fboundp 'has-device)
   (cl:defgeneric has-device (proto)))
-(cl:defmethod has-device ((self resource-handle))
+(cl:defmethod has-device ((self resource-handle-proto))
   (cl:logbitp 0 (cl:slot-value self '%has-bits%)))
 (cl:export 'has-device)
 
 (cl:unless (cl:fboundp 'clear-device)
   (cl:defgeneric clear-device (proto)))
-(cl:defmethod clear-device ((self resource-handle))
+(cl:defmethod clear-device ((self resource-handle-proto))
   (cl:setf (cl:slot-value self 'device) (pb:string-field ""))
   (cl:setf (cl:ldb (cl:byte 1 0) (cl:slot-value self '%has-bits%)) 0)
   (cl:values))
@@ -68,19 +68,19 @@
 (cl:export 'container)
 
 
-(cl:defmethod (cl:setf container) :after (x (self resource-handle))
+(cl:defmethod (cl:setf container) :after (x (self resource-handle-proto))
   (cl:declare (cl:ignore x))
   (cl:setf (cl:ldb (cl:byte 1 1) (cl:slot-value self '%has-bits%)) 1))
 
 (cl:unless (cl:fboundp 'has-container)
   (cl:defgeneric has-container (proto)))
-(cl:defmethod has-container ((self resource-handle))
+(cl:defmethod has-container ((self resource-handle-proto))
   (cl:logbitp 1 (cl:slot-value self '%has-bits%)))
 (cl:export 'has-container)
 
 (cl:unless (cl:fboundp 'clear-container)
   (cl:defgeneric clear-container (proto)))
-(cl:defmethod clear-container ((self resource-handle))
+(cl:defmethod clear-container ((self resource-handle-proto))
   (cl:setf (cl:slot-value self 'container) (pb:string-field ""))
   (cl:setf (cl:ldb (cl:byte 1 1) (cl:slot-value self '%has-bits%)) 0)
   (cl:values))
@@ -89,19 +89,19 @@
 (cl:export 'name)
 
 
-(cl:defmethod (cl:setf name) :after (x (self resource-handle))
+(cl:defmethod (cl:setf name) :after (x (self resource-handle-proto))
   (cl:declare (cl:ignore x))
   (cl:setf (cl:ldb (cl:byte 1 2) (cl:slot-value self '%has-bits%)) 1))
 
 (cl:unless (cl:fboundp 'has-name)
   (cl:defgeneric has-name (proto)))
-(cl:defmethod has-name ((self resource-handle))
+(cl:defmethod has-name ((self resource-handle-proto))
   (cl:logbitp 2 (cl:slot-value self '%has-bits%)))
 (cl:export 'has-name)
 
 (cl:unless (cl:fboundp 'clear-name)
   (cl:defgeneric clear-name (proto)))
-(cl:defmethod clear-name ((self resource-handle))
+(cl:defmethod clear-name ((self resource-handle-proto))
   (cl:setf (cl:slot-value self 'name) (pb:string-field ""))
   (cl:setf (cl:ldb (cl:byte 1 2) (cl:slot-value self '%has-bits%)) 0)
   (cl:values))
@@ -110,19 +110,19 @@
 (cl:export 'hash-code)
 
 
-(cl:defmethod (cl:setf hash-code) :after (x (self resource-handle))
+(cl:defmethod (cl:setf hash-code) :after (x (self resource-handle-proto))
   (cl:declare (cl:ignore x))
   (cl:setf (cl:ldb (cl:byte 1 3) (cl:slot-value self '%has-bits%)) 1))
 
 (cl:unless (cl:fboundp 'has-hash-code)
   (cl:defgeneric has-hash-code (proto)))
-(cl:defmethod has-hash-code ((self resource-handle))
+(cl:defmethod has-hash-code ((self resource-handle-proto))
   (cl:logbitp 3 (cl:slot-value self '%has-bits%)))
 (cl:export 'has-hash-code)
 
 (cl:unless (cl:fboundp 'clear-hash-code)
   (cl:defgeneric clear-hash-code (proto)))
-(cl:defmethod clear-hash-code ((self resource-handle))
+(cl:defmethod clear-hash-code ((self resource-handle-proto))
   (cl:setf (cl:slot-value self 'hash-code) 0)
   (cl:setf (cl:ldb (cl:byte 1 3) (cl:slot-value self '%has-bits%)) 0)
   (cl:values))
@@ -131,26 +131,26 @@
 (cl:export 'maybe-type-name)
 
 
-(cl:defmethod (cl:setf maybe-type-name) :after (x (self resource-handle))
+(cl:defmethod (cl:setf maybe-type-name) :after (x (self resource-handle-proto))
   (cl:declare (cl:ignore x))
   (cl:setf (cl:ldb (cl:byte 1 4) (cl:slot-value self '%has-bits%)) 1))
 
 (cl:unless (cl:fboundp 'has-maybe-type-name)
   (cl:defgeneric has-maybe-type-name (proto)))
-(cl:defmethod has-maybe-type-name ((self resource-handle))
+(cl:defmethod has-maybe-type-name ((self resource-handle-proto))
   (cl:logbitp 4 (cl:slot-value self '%has-bits%)))
 (cl:export 'has-maybe-type-name)
 
 (cl:unless (cl:fboundp 'clear-maybe-type-name)
   (cl:defgeneric clear-maybe-type-name (proto)))
-(cl:defmethod clear-maybe-type-name ((self resource-handle))
+(cl:defmethod clear-maybe-type-name ((self resource-handle-proto))
   (cl:setf (cl:slot-value self 'maybe-type-name) (pb:string-field ""))
   (cl:setf (cl:ldb (cl:byte 1 4) (cl:slot-value self '%has-bits%)) 0)
   (cl:values))
 (cl:export 'clear-maybe-type-name)
 
 
-(cl:defmethod cl:print-object ((self resource-handle) stream)
+(cl:defmethod cl:print-object ((self resource-handle-proto) stream)
   (cl:pprint-logical-block (stream cl:nil)
     (cl:print-unreadable-object (self stream :type cl:t :identity cl:t)
       (cl:when (cl:logbitp 0 (cl:slot-value self '%has-bits%))
@@ -166,7 +166,7 @@
       ))
   (cl:values))
 
-(cl:defmethod pb:clear ((self resource-handle))
+(cl:defmethod pb:clear ((self resource-handle-proto))
   (cl:when (cl:logbitp 0 (cl:slot-value self '%has-bits%))
     (cl:setf (cl:slot-value self 'device) (pb:string-field "")))
   (cl:when (cl:logbitp 1 (cl:slot-value self '%has-bits%))
@@ -179,10 +179,10 @@
   (cl:setf (cl:slot-value self '%has-bits%) 0)
   (cl:values))
 
-(cl:defmethod pb:is-initialized ((self resource-handle))
+(cl:defmethod pb:is-initialized ((self resource-handle-proto))
   cl:t)
 
-(cl:defmethod pb:octet-size ((self resource-handle))
+(cl:defmethod pb:octet-size ((self resource-handle-proto))
   (cl:let ((size 0))
     ;; string device = 1[json_name = "device"];
     (cl:when (cl:logbitp 0 (cl:slot-value self '%has-bits%))
@@ -211,7 +211,7 @@
     (cl:setf (cl:slot-value self 'pb::%cached-size%) size)
     size))
 
-(cl:defmethod pb:serialize ((self resource-handle) buffer index limit)
+(cl:defmethod pb:serialize ((self resource-handle-proto) buffer index limit)
   (cl:declare (cl:type com.google.base:octet-vector buffer)
               (cl:type com.google.base:vector-index index limit)
               (cl:ignorable buffer limit))
@@ -237,7 +237,7 @@
     (cl:setf index (wire-format:write-octets-carefully buffer index limit (cl:slot-value (cl:slot-value self 'maybe-type-name) 'pb::%octets%))))
   index)
 
-(cl:defmethod pb:merge-from-array ((self resource-handle) buffer start limit)
+(cl:defmethod pb:merge-from-array ((self resource-handle-proto) buffer start limit)
   (cl:declare (cl:type com.google.base:octet-vector buffer)
               (cl:type com.google.base:vector-index start limit))
   (cl:do ((index start index))
@@ -287,7 +287,7 @@
             (cl:return-from pb:merge-from-array index))
           (cl:setf index (wire-format:skip-field buffer index limit tag)))))))
 
-(cl:defmethod pb:merge-from-message ((self resource-handle) (from resource-handle))
+(cl:defmethod pb:merge-from-message ((self resource-handle-proto) (from resource-handle-proto))
   (cl:when (cl:logbitp 0 (cl:slot-value from '%has-bits%))
     (cl:setf (cl:slot-value self 'device) (cl:slot-value from 'device))
     (cl:setf (cl:ldb (cl:byte 1 0) (cl:slot-value self '%has-bits%)) 1))

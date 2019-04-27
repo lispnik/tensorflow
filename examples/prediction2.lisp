@@ -6,13 +6,7 @@
 
 (ql:quickload :drakma)
 
-(defun file-as-bytes (path)
-  (with-open-file (s path :element-type 'unsigned-byte)
-    (let ((buf (make-array (file-length s) :element-type '(unsigned-byte 8))))
-      (read-sequence buf s)
-      buf)))
-
-;; ;; SEE ~/tensorflow/tensorflow/examples/label_image/README.md
+;; ;; See ~/tensorflow/tensorflow/examples/label_image/README.md
 ;; ;; https://github.com/tensorflow/tensorflow/tree/master/tensorflow/examples/label_image
 ;; cd ~/tensorflow
 ;; curl -L "https://storage.googleapis.com/download.tensorflow.org/models/inception_v3_2016_08_28_frozen.pb.tar.gz" | tar -C tensorflow/examples/label_image/data -xz
@@ -20,7 +14,7 @@
 ;; input should be a tensor 1 x 299 x 299 x 3, with channel values scaled to be between 0 and 1
 
 (defvar *graph*
-  (file-as-bytes "~/tensorflow/tensorflow/examples/label_image/data/inception_v3_2016_08_28_frozen.pb"))
+  (tf:file-as-bytes "~/tensorflow/tensorflow/examples/label_image/data/inception_v3_2016_08_28_frozen.pb"))
 
 ;; (tf::load-graph-def *graph*)
 
@@ -89,7 +83,6 @@
 
 (defvar *test-images* '("https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Blue_cup_of_coffee.svg/500px-Blue_cup_of_coffee.svg.png"
 			"https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Sport_car_rim.svg/500px-Sport_car_rim.svg.png"
-			"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/PEO-car.svg/500px-PEO-car.svg.png"
 			"https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Perseus1Hfx.png/480px-Perseus1Hfx.png"
 			"https://upload.wikimedia.org/wikipedia/commons/7/77/Avatar_cat.png"))
 

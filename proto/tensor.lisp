@@ -96,13 +96,34 @@
    :accessor resource-handle-val
    :initform (cl:make-array
               0
-              :element-type 'tensorflow.protobuf::resource-handle
+              :element-type 'tensorflow.protobuf::resource-handle-proto
               :fill-pointer 0 :adjustable cl:t)
-   :type (cl:vector tensorflow.protobuf::resource-handle))
+   :type (cl:vector tensorflow.protobuf::resource-handle-proto))
+  (variant-val
+   :accessor variant-val
+   :initform (cl:make-array
+              0
+              :element-type 'tensorflow.protobuf::variant-tensor-data-proto
+              :fill-pointer 0 :adjustable cl:t)
+   :type (cl:vector tensorflow.protobuf::variant-tensor-data-proto))
+  (uint32-val
+   :accessor uint32-val
+   :initform (cl:make-array
+              0
+              :element-type '(cl:unsigned-byte 32)
+              :fill-pointer 0 :adjustable cl:t)
+   :type (cl:vector (cl:unsigned-byte 32)))
+  (uint64-val
+   :accessor uint64-val
+   :initform (cl:make-array
+              0
+              :element-type '(cl:unsigned-byte 64)
+              :fill-pointer 0 :adjustable cl:t)
+   :type (cl:vector (cl:unsigned-byte 64)))
   (%has-bits%
    :accessor %has-bits%
    :initform 0
-   :type (cl:unsigned-byte 14))
+   :type (cl:unsigned-byte 17))
   (pb::%cached-size%
    :initform 0
    :type (cl:integer 0 #.(cl:1- cl:array-dimension-limit)))
@@ -310,10 +331,43 @@
   (cl:defgeneric clear-resource-handle-val (proto)))
 (cl:defmethod clear-resource-handle-val ((self tensor-proto))
   (cl:setf (cl:slot-value self 'resource-handle-val)
-           (cl:make-array 0 :element-type 'tensorflow.protobuf::resource-handle
+           (cl:make-array 0 :element-type 'tensorflow.protobuf::resource-handle-proto
             :fill-pointer 0 :adjustable cl:t))
   (cl:values))
 (cl:export 'clear-resource-handle-val)
+
+(cl:export 'variant-val)
+
+(cl:unless (cl:fboundp 'clear-variant-val)
+  (cl:defgeneric clear-variant-val (proto)))
+(cl:defmethod clear-variant-val ((self tensor-proto))
+  (cl:setf (cl:slot-value self 'variant-val)
+           (cl:make-array 0 :element-type 'tensorflow.protobuf::variant-tensor-data-proto
+            :fill-pointer 0 :adjustable cl:t))
+  (cl:values))
+(cl:export 'clear-variant-val)
+
+(cl:export 'uint32-val)
+
+(cl:unless (cl:fboundp 'clear-uint32-val)
+  (cl:defgeneric clear-uint32-val (proto)))
+(cl:defmethod clear-uint32-val ((self tensor-proto))
+  (cl:setf (cl:slot-value self 'uint32-val)
+           (cl:make-array 0 :element-type '(cl:unsigned-byte 32)
+            :fill-pointer 0 :adjustable cl:t))
+  (cl:values))
+(cl:export 'clear-uint32-val)
+
+(cl:export 'uint64-val)
+
+(cl:unless (cl:fboundp 'clear-uint64-val)
+  (cl:defgeneric clear-uint64-val (proto)))
+(cl:defmethod clear-uint64-val ((self tensor-proto))
+  (cl:setf (cl:slot-value self 'uint64-val)
+           (cl:make-array 0 :element-type '(cl:unsigned-byte 64)
+            :fill-pointer 0 :adjustable cl:t))
+  (cl:values))
+(cl:export 'clear-uint64-val)
 
 
 (cl:defmethod cl:print-object ((self tensor-proto) stream)
@@ -337,6 +391,9 @@
       (cl:format stream " ~_bool-val: ~s" (bool-val self))
       (cl:format stream " ~_dcomplex-val: ~s" (dcomplex-val self))
       (cl:format stream " ~_resource-handle-val: ~s" (resource-handle-val self))
+      (cl:format stream " ~_variant-val: ~s" (variant-val self))
+      (cl:format stream " ~_uint32-val: ~s" (uint32-val self))
+      (cl:format stream " ~_uint64-val: ~s" (uint64-val self))
       ))
   (cl:values))
 
@@ -377,7 +434,16 @@
            (cl:make-array 0 :element-type 'cl:double-float
             :fill-pointer 0 :adjustable cl:t))
   (cl:setf (cl:slot-value self 'resource-handle-val)
-           (cl:make-array 0 :element-type 'tensorflow.protobuf::resource-handle
+           (cl:make-array 0 :element-type 'tensorflow.protobuf::resource-handle-proto
+            :fill-pointer 0 :adjustable cl:t))
+  (cl:setf (cl:slot-value self 'variant-val)
+           (cl:make-array 0 :element-type 'tensorflow.protobuf::variant-tensor-data-proto
+            :fill-pointer 0 :adjustable cl:t))
+  (cl:setf (cl:slot-value self 'uint32-val)
+           (cl:make-array 0 :element-type '(cl:unsigned-byte 32)
+            :fill-pointer 0 :adjustable cl:t))
+  (cl:setf (cl:slot-value self 'uint64-val)
+           (cl:make-array 0 :element-type '(cl:unsigned-byte 64)
             :fill-pointer 0 :adjustable cl:t))
   (cl:setf (cl:slot-value self '%has-bits%) 0)
   (cl:values))
@@ -447,13 +513,34 @@
     ;; repeated double dcomplex_val = 12[json_name = "dcomplexVal", packed = true];
     (cl:incf size (cl:* (cl:+ 1 8)
                      (cl:length (cl:slot-value self 'dcomplex-val))))
-    ;; repeated .tensorflow.protobuf.ResourceHandle resource_handle_val = 14[json_name = "resourceHandleVal"];
+    ;; repeated .tensorflow.protobuf.ResourceHandleProto resource_handle_val = 14[json_name = "resourceHandleVal"];
     (cl:let* ((v (cl:slot-value self 'resource-handle-val))
               (length (cl:length v)))
       (cl:incf size (cl:* 1 length))
       (cl:dotimes (i length)
         (cl:let ((s (pb:octet-size (cl:aref v i))))
           (cl:incf size (cl:+ s (varint:length32 s))))))
+    ;; repeated .tensorflow.protobuf.VariantTensorDataProto variant_val = 15[json_name = "variantVal"];
+    (cl:let* ((v (cl:slot-value self 'variant-val))
+              (length (cl:length v)))
+      (cl:incf size (cl:* 1 length))
+      (cl:dotimes (i length)
+        (cl:let ((s (pb:octet-size (cl:aref v i))))
+          (cl:incf size (cl:+ s (varint:length32 s))))))
+    ;; repeated uint32 uint32_val = 16[json_name = "uint32Val", packed = true];
+    (cl:let* ((x (cl:slot-value self 'uint32-val))
+              (length (cl:length x)))
+      (cl:incf size (cl:* 2 length))
+      (cl:dotimes (i length)
+        (cl:incf size
+         (varint:length32 (cl:aref (cl:slot-value self 'uint32-val) i)))))
+    ;; repeated uint64 uint64_val = 17[json_name = "uint64Val", packed = true];
+    (cl:let* ((x (cl:slot-value self 'uint64-val))
+              (length (cl:length x)))
+      (cl:incf size (cl:* 2 length))
+      (cl:dotimes (i length)
+        (cl:incf size
+         (varint:length64 (cl:aref (cl:slot-value self 'uint64-val) i)))))
     (cl:setf (cl:slot-value self 'pb::%cached-size%) size)
     size))
 
@@ -534,13 +621,32 @@
     (cl:loop for i from 0 below length do
       (cl:setf index (varint:encode-uint32-carefully buffer index limit 106))
       (cl:setf index (varint:encode-uint64-carefully buffer index limit (cl:ldb (cl:byte 64 0) (cl:aref v i))))))
-  ;; repeated .tensorflow.protobuf.ResourceHandle resource_handle_val = 14[json_name = "resourceHandleVal"];
+  ;; repeated .tensorflow.protobuf.ResourceHandleProto resource_handle_val = 14[json_name = "resourceHandleVal"];
   (cl:let* ((v (cl:slot-value self 'resource-handle-val))
             (length (cl:length v)))
     (cl:loop for i from 0 below length do
        (cl:setf index (varint:encode-uint32-carefully buffer index limit 114))
        (cl:setf index (varint:encode-uint32-carefully buffer index limit (cl:slot-value (cl:aref v i) 'pb::%cached-size%)))
        (cl:setf index (pb:serialize (cl:aref v i) buffer index limit))))
+  ;; repeated .tensorflow.protobuf.VariantTensorDataProto variant_val = 15[json_name = "variantVal"];
+  (cl:let* ((v (cl:slot-value self 'variant-val))
+            (length (cl:length v)))
+    (cl:loop for i from 0 below length do
+       (cl:setf index (varint:encode-uint32-carefully buffer index limit 122))
+       (cl:setf index (varint:encode-uint32-carefully buffer index limit (cl:slot-value (cl:aref v i) 'pb::%cached-size%)))
+       (cl:setf index (pb:serialize (cl:aref v i) buffer index limit))))
+  ;; repeated uint32 uint32_val = 16[json_name = "uint32Val", packed = true];
+  (cl:let* ((v (cl:slot-value self 'uint32-val))
+            (length (cl:length v)))
+    (cl:loop for i from 0 below length do
+      (cl:setf index (varint:encode-uint32-carefully buffer index limit 130))
+      (cl:setf index (varint:encode-uint32-carefully buffer index limit (cl:aref v i)))))
+  ;; repeated uint64 uint64_val = 17[json_name = "uint64Val", packed = true];
+  (cl:let* ((v (cl:slot-value self 'uint64-val))
+            (length (cl:length v)))
+    (cl:loop for i from 0 below length do
+      (cl:setf index (varint:encode-uint32-carefully buffer index limit 138))
+      (cl:setf index (varint:encode-uint64-carefully buffer index limit (cl:aref v i)))))
   index)
 
 (cl:defmethod pb:merge-from-array ((self tensor-proto) buffer start limit)
@@ -683,17 +789,50 @@
                     (varint:parse-int32-carefully buffer index limit)
                     (cl:vector-push-extend value (cl:slot-value self 'half-val))
                     (cl:setf index new-index))))))
-        ;; repeated .tensorflow.protobuf.ResourceHandle resource_handle_val = 14[json_name = "resourceHandleVal"];
+        ;; repeated .tensorflow.protobuf.ResourceHandleProto resource_handle_val = 14[json_name = "resourceHandleVal"];
         ((114)
           (cl:multiple-value-bind (length new-index)
               (varint:parse-uint31-carefully buffer index limit)
             (cl:when (cl:> (cl:+ new-index length) limit)
               (cl:error "buffer overflow"))
-            (cl:let ((message (cl:make-instance 'tensorflow.protobuf::resource-handle)))
+            (cl:let ((message (cl:make-instance 'tensorflow.protobuf::resource-handle-proto)))
               (cl:setf index (pb:merge-from-array message buffer new-index (cl:+ new-index length)))
               (cl:when (cl:not (cl:= index (cl:+ new-index length)))
                 (cl:error "buffer overflow"))
               (cl:vector-push-extend message (cl:slot-value self 'resource-handle-val)))))
+        ;; repeated .tensorflow.protobuf.VariantTensorDataProto variant_val = 15[json_name = "variantVal"];
+        ((122)
+          (cl:multiple-value-bind (length new-index)
+              (varint:parse-uint31-carefully buffer index limit)
+            (cl:when (cl:> (cl:+ new-index length) limit)
+              (cl:error "buffer overflow"))
+            (cl:let ((message (cl:make-instance 'tensorflow.protobuf::variant-tensor-data-proto)))
+              (cl:setf index (pb:merge-from-array message buffer new-index (cl:+ new-index length)))
+              (cl:when (cl:not (cl:= index (cl:+ new-index length)))
+                (cl:error "buffer overflow"))
+              (cl:vector-push-extend message (cl:slot-value self 'variant-val)))))
+        ;; repeated uint32 uint32_val = 16[json_name = "uint32Val", packed = true];
+        ((130)
+          (cl:multiple-value-bind (length new-index)
+              (varint:parse-uint32-carefully buffer index limit)
+            (cl:setf index new-index)
+            (cl:let ((end (cl:+ index length)))
+              (cl:loop while (cl:< index end) do
+                (cl:multiple-value-bind (value new-index)
+                    (varint:parse-uint32-carefully buffer index limit)
+                    (cl:vector-push-extend value (cl:slot-value self 'uint32-val))
+                    (cl:setf index new-index))))))
+        ;; repeated uint64 uint64_val = 17[json_name = "uint64Val", packed = true];
+        ((138)
+          (cl:multiple-value-bind (length new-index)
+              (varint:parse-uint32-carefully buffer index limit)
+            (cl:setf index new-index)
+            (cl:let ((end (cl:+ index length)))
+              (cl:loop while (cl:< index end) do
+                (cl:multiple-value-bind (value new-index)
+                    (varint:parse-uint64-carefully buffer index limit)
+                    (cl:vector-push-extend value (cl:slot-value self 'uint64-val))
+                    (cl:setf index new-index))))))
         (cl:t
           (cl:when (cl:= (cl:logand tag 7) 4)
             (cl:return-from pb:merge-from-array index))
@@ -749,6 +888,21 @@
             (length (cl:length vf)))
     (cl:loop for i from 0 below length do
       (cl:vector-push-extend (cl:aref vf i) v)))
+  (cl:let* ((v (cl:slot-value self 'variant-val))
+            (vf (cl:slot-value from 'variant-val))
+            (length (cl:length vf)))
+    (cl:loop for i from 0 below length do
+      (cl:vector-push-extend (cl:aref vf i) v)))
+  (cl:let* ((v (cl:slot-value self 'uint32-val))
+            (vf (cl:slot-value from 'uint32-val))
+            (length (cl:length vf)))
+    (cl:loop for i from 0 below length do
+      (cl:vector-push-extend (cl:aref vf i) v)))
+  (cl:let* ((v (cl:slot-value self 'uint64-val))
+            (vf (cl:slot-value from 'uint64-val))
+            (length (cl:length vf)))
+    (cl:loop for i from 0 below length do
+      (cl:vector-push-extend (cl:aref vf i) v)))
   (cl:when (cl:logbitp 0 (cl:slot-value from '%has-bits%))
     (cl:setf (cl:slot-value self 'dtype) (cl:slot-value from 'dtype))
     (cl:setf (cl:ldb (cl:byte 1 0) (cl:slot-value self '%has-bits%)) 1))
@@ -765,6 +919,211 @@
   (cl:when (cl:logbitp 3 (cl:slot-value from '%has-bits%))
     (cl:setf (cl:slot-value self 'tensor-content) (cl:slot-value from 'tensor-content))
     (cl:setf (cl:ldb (cl:byte 1 3) (cl:slot-value self '%has-bits%)) 1))
+)
+
+
+(cl:defclass variant-tensor-data-proto (pb:protocol-buffer)
+  (
+  (type-name
+   :accessor type-name
+   :initform (pb:string-field "")
+   :type pb::%sf%)
+  (metadata
+   :accessor metadata
+   :initform (cl:make-array 0 :element-type '(cl:unsigned-byte 8))
+   :type (cl:simple-array (cl:unsigned-byte 8) (cl:*)))
+  (tensors
+   :accessor tensors
+   :initform (cl:make-array
+              0
+              :element-type 'tensorflow.protobuf::tensor-proto
+              :fill-pointer 0 :adjustable cl:t)
+   :type (cl:vector tensorflow.protobuf::tensor-proto))
+  (%has-bits%
+   :accessor %has-bits%
+   :initform 0
+   :type (cl:unsigned-byte 3))
+  (pb::%cached-size%
+   :initform 0
+   :type (cl:integer 0 #.(cl:1- cl:array-dimension-limit)))
+  ))
+
+(cl:export 'variant-tensor-data-proto)
+
+(cl:export 'type-name)
+
+
+(cl:defmethod (cl:setf type-name) :after (x (self variant-tensor-data-proto))
+  (cl:declare (cl:ignore x))
+  (cl:setf (cl:ldb (cl:byte 1 0) (cl:slot-value self '%has-bits%)) 1))
+
+(cl:unless (cl:fboundp 'has-type-name)
+  (cl:defgeneric has-type-name (proto)))
+(cl:defmethod has-type-name ((self variant-tensor-data-proto))
+  (cl:logbitp 0 (cl:slot-value self '%has-bits%)))
+(cl:export 'has-type-name)
+
+(cl:unless (cl:fboundp 'clear-type-name)
+  (cl:defgeneric clear-type-name (proto)))
+(cl:defmethod clear-type-name ((self variant-tensor-data-proto))
+  (cl:setf (cl:slot-value self 'type-name) (pb:string-field ""))
+  (cl:setf (cl:ldb (cl:byte 1 0) (cl:slot-value self '%has-bits%)) 0)
+  (cl:values))
+(cl:export 'clear-type-name)
+
+(cl:export 'metadata)
+
+
+(cl:defmethod (cl:setf metadata) :after (x (self variant-tensor-data-proto))
+  (cl:declare (cl:ignore x))
+  (cl:setf (cl:ldb (cl:byte 1 1) (cl:slot-value self '%has-bits%)) 1))
+
+(cl:unless (cl:fboundp 'has-metadata)
+  (cl:defgeneric has-metadata (proto)))
+(cl:defmethod has-metadata ((self variant-tensor-data-proto))
+  (cl:logbitp 1 (cl:slot-value self '%has-bits%)))
+(cl:export 'has-metadata)
+
+(cl:unless (cl:fboundp 'clear-metadata)
+  (cl:defgeneric clear-metadata (proto)))
+(cl:defmethod clear-metadata ((self variant-tensor-data-proto))
+  (cl:setf (cl:slot-value self 'metadata) (cl:make-array 0 :element-type '(cl:unsigned-byte 8)))
+  (cl:setf (cl:ldb (cl:byte 1 1) (cl:slot-value self '%has-bits%)) 0)
+  (cl:values))
+(cl:export 'clear-metadata)
+
+(cl:export 'tensors)
+
+(cl:unless (cl:fboundp 'clear-tensors)
+  (cl:defgeneric clear-tensors (proto)))
+(cl:defmethod clear-tensors ((self variant-tensor-data-proto))
+  (cl:setf (cl:slot-value self 'tensors)
+           (cl:make-array 0 :element-type 'tensorflow.protobuf::tensor-proto
+            :fill-pointer 0 :adjustable cl:t))
+  (cl:values))
+(cl:export 'clear-tensors)
+
+
+(cl:defmethod cl:print-object ((self variant-tensor-data-proto) stream)
+  (cl:pprint-logical-block (stream cl:nil)
+    (cl:print-unreadable-object (self stream :type cl:t :identity cl:t)
+      (cl:when (cl:logbitp 0 (cl:slot-value self '%has-bits%))
+        (cl:format stream " ~_type-name: ~s" (type-name self)))
+      (cl:when (cl:logbitp 1 (cl:slot-value self '%has-bits%))
+        (cl:format stream " ~_metadata: ~s" (metadata self)))
+      (cl:format stream " ~_tensors: ~s" (tensors self))
+      ))
+  (cl:values))
+
+(cl:defmethod pb:clear ((self variant-tensor-data-proto))
+  (cl:when (cl:logbitp 0 (cl:slot-value self '%has-bits%))
+    (cl:setf (cl:slot-value self 'type-name) (pb:string-field "")))
+  (cl:when (cl:logbitp 1 (cl:slot-value self '%has-bits%))
+    (cl:setf (cl:slot-value self 'metadata) (cl:make-array 0 :element-type '(cl:unsigned-byte 8))))
+  (cl:setf (cl:slot-value self 'tensors)
+           (cl:make-array 0 :element-type 'tensorflow.protobuf::tensor-proto
+            :fill-pointer 0 :adjustable cl:t))
+  (cl:setf (cl:slot-value self '%has-bits%) 0)
+  (cl:values))
+
+(cl:defmethod pb:is-initialized ((self variant-tensor-data-proto))
+  cl:t)
+
+(cl:defmethod pb:octet-size ((self variant-tensor-data-proto))
+  (cl:let ((size 0))
+    ;; string type_name = 1[json_name = "typeName"];
+    (cl:when (cl:logbitp 0 (cl:slot-value self '%has-bits%))
+      (cl:incf size 1)
+      (cl:incf size (cl:let ((s (pb::%utf8-string-length% (cl:slot-value self 'type-name))))
+        (cl:+ s (varint:length32 s)))))
+    ;; bytes metadata = 2[json_name = "metadata"];
+    (cl:when (cl:logbitp 1 (cl:slot-value self '%has-bits%))
+      (cl:incf size 1)
+      (cl:incf size (cl:let ((s (cl:length (cl:slot-value self 'metadata))))
+        (cl:+ s (varint:length32 s)))))
+    ;; repeated .tensorflow.protobuf.TensorProto tensors = 3[json_name = "tensors"];
+    (cl:let* ((v (cl:slot-value self 'tensors))
+              (length (cl:length v)))
+      (cl:incf size (cl:* 1 length))
+      (cl:dotimes (i length)
+        (cl:let ((s (pb:octet-size (cl:aref v i))))
+          (cl:incf size (cl:+ s (varint:length32 s))))))
+    (cl:setf (cl:slot-value self 'pb::%cached-size%) size)
+    size))
+
+(cl:defmethod pb:serialize ((self variant-tensor-data-proto) buffer index limit)
+  (cl:declare (cl:type com.google.base:octet-vector buffer)
+              (cl:type com.google.base:vector-index index limit)
+              (cl:ignorable buffer limit))
+  ;; string type_name = 1[json_name = "typeName"];
+  (cl:when (cl:logbitp 0 (cl:slot-value self '%has-bits%))
+    (cl:setf index (varint:encode-uint32-carefully buffer index limit 10))
+    (cl:setf index (wire-format:write-octets-carefully buffer index limit (cl:slot-value (cl:slot-value self 'type-name) 'pb::%octets%))))
+  ;; bytes metadata = 2[json_name = "metadata"];
+  (cl:when (cl:logbitp 1 (cl:slot-value self '%has-bits%))
+    (cl:setf index (varint:encode-uint32-carefully buffer index limit 18))
+    (cl:setf index (wire-format:write-octets-carefully buffer index limit (cl:slot-value self 'metadata))))
+  ;; repeated .tensorflow.protobuf.TensorProto tensors = 3[json_name = "tensors"];
+  (cl:let* ((v (cl:slot-value self 'tensors))
+            (length (cl:length v)))
+    (cl:loop for i from 0 below length do
+       (cl:setf index (varint:encode-uint32-carefully buffer index limit 26))
+       (cl:setf index (varint:encode-uint32-carefully buffer index limit (cl:slot-value (cl:aref v i) 'pb::%cached-size%)))
+       (cl:setf index (pb:serialize (cl:aref v i) buffer index limit))))
+  index)
+
+(cl:defmethod pb:merge-from-array ((self variant-tensor-data-proto) buffer start limit)
+  (cl:declare (cl:type com.google.base:octet-vector buffer)
+              (cl:type com.google.base:vector-index start limit))
+  (cl:do ((index start index))
+      ((cl:>= index limit) index)
+    (cl:declare (cl:type com.google.base:vector-index index))
+    (cl:multiple-value-bind (tag new-index)
+        (varint:parse-uint32-carefully buffer index limit)
+      (cl:setf index new-index)
+      (cl:case tag
+        ;; string type_name = 1[json_name = "typeName"];
+        ((10)
+          (cl:multiple-value-bind (value new-index)
+              (wire-format:read-octets-carefully buffer index limit)
+            (cl:setf (cl:slot-value self 'type-name) (pb:string-field value))
+            (cl:setf (cl:ldb (cl:byte 1 0) (cl:slot-value self '%has-bits%)) 1)
+            (cl:setf index new-index)))
+        ;; bytes metadata = 2[json_name = "metadata"];
+        ((18)
+          (cl:multiple-value-bind (value new-index)
+              (wire-format:read-octets-carefully buffer index limit)
+            (cl:setf (cl:slot-value self 'metadata) value)
+            (cl:setf (cl:ldb (cl:byte 1 1) (cl:slot-value self '%has-bits%)) 1)
+            (cl:setf index new-index)))
+        ;; repeated .tensorflow.protobuf.TensorProto tensors = 3[json_name = "tensors"];
+        ((26)
+          (cl:multiple-value-bind (length new-index)
+              (varint:parse-uint31-carefully buffer index limit)
+            (cl:when (cl:> (cl:+ new-index length) limit)
+              (cl:error "buffer overflow"))
+            (cl:let ((message (cl:make-instance 'tensorflow.protobuf::tensor-proto)))
+              (cl:setf index (pb:merge-from-array message buffer new-index (cl:+ new-index length)))
+              (cl:when (cl:not (cl:= index (cl:+ new-index length)))
+                (cl:error "buffer overflow"))
+              (cl:vector-push-extend message (cl:slot-value self 'tensors)))))
+        (cl:t
+          (cl:when (cl:= (cl:logand tag 7) 4)
+            (cl:return-from pb:merge-from-array index))
+          (cl:setf index (wire-format:skip-field buffer index limit tag)))))))
+
+(cl:defmethod pb:merge-from-message ((self variant-tensor-data-proto) (from variant-tensor-data-proto))
+  (cl:let* ((v (cl:slot-value self 'tensors))
+            (vf (cl:slot-value from 'tensors))
+            (length (cl:length vf)))
+    (cl:loop for i from 0 below length do
+      (cl:vector-push-extend (cl:aref vf i) v)))
+  (cl:when (cl:logbitp 0 (cl:slot-value from '%has-bits%))
+    (cl:setf (cl:slot-value self 'type-name) (cl:slot-value from 'type-name))
+    (cl:setf (cl:ldb (cl:byte 1 0) (cl:slot-value self '%has-bits%)) 1))
+  (cl:when (cl:logbitp 1 (cl:slot-value from '%has-bits%))
+    (cl:setf (cl:slot-value self 'metadata) (cl:slot-value from 'metadata))
+    (cl:setf (cl:ldb (cl:byte 1 1) (cl:slot-value self '%has-bits%)) 1))
 )
 
 

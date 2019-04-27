@@ -11,7 +11,7 @@
 (in-package #:tensorflow.protobuf)
 (cl:declaim #.com.google.base:*optimize-default*)
 
-(cl:deftype data-type () '(cl:member 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120))
+(cl:deftype data-type () '(cl:member 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117 118 119 120 121 122 123))
 (cl:export 'data-type)
 
 (cl:defconstant +data-type-dt-invalid+ 0)
@@ -56,6 +56,12 @@
 (cl:export '+data-type-dt-half+)
 (cl:defconstant +data-type-dt-resource+ 20)
 (cl:export '+data-type-dt-resource+)
+(cl:defconstant +data-type-dt-variant+ 21)
+(cl:export '+data-type-dt-variant+)
+(cl:defconstant +data-type-dt-uint32+ 22)
+(cl:export '+data-type-dt-uint32+)
+(cl:defconstant +data-type-dt-uint64+ 23)
+(cl:export '+data-type-dt-uint64+)
 (cl:defconstant +data-type-dt-float-ref+ 101)
 (cl:export '+data-type-dt-float-ref+)
 (cl:defconstant +data-type-dt-double-ref+ 102)
@@ -96,9 +102,15 @@
 (cl:export '+data-type-dt-half-ref+)
 (cl:defconstant +data-type-dt-resource-ref+ 120)
 (cl:export '+data-type-dt-resource-ref+)
+(cl:defconstant +data-type-dt-variant-ref+ 121)
+(cl:export '+data-type-dt-variant-ref+)
+(cl:defconstant +data-type-dt-uint32-ref+ 122)
+(cl:export '+data-type-dt-uint32-ref+)
+(cl:defconstant +data-type-dt-uint64-ref+ 123)
+(cl:export '+data-type-dt-uint64-ref+)
 
 (cl:defconstant +minimum-data-type+ +data-type-dt-invalid+)
 (cl:export '+minimum-data-type+)
-(cl:defconstant +maximum-data-type+ +data-type-dt-resource-ref+)
+(cl:defconstant +maximum-data-type+ +data-type-dt-uint64-ref+)
 (cl:export '+maximum-data-type+)
 

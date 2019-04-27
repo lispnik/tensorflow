@@ -85,6 +85,41 @@
 
 
 
+(cl:defclass node-def-experimental-debug-info (pb:protocol-buffer)
+  (
+  (original-node-names
+   :accessor original-node-names
+   :initform (cl:make-array
+              0
+              :element-type 'pb::%sf%
+              :fill-pointer 0 :adjustable cl:t)
+   :type (cl:vector pb::%sf%))
+  (%has-bits%
+   :accessor %has-bits%
+   :initform 0
+   :type (cl:unsigned-byte 1))
+  (pb::%cached-size%
+   :initform 0
+   :type (cl:integer 0 #.(cl:1- cl:array-dimension-limit)))
+  ))
+
+(cl:export 'node-def-experimental-debug-info)
+
+(cl:export 'original-node-names)
+
+(cl:unless (cl:fboundp 'clear-original-node-names)
+  (cl:defgeneric clear-original-node-names (proto)))
+(cl:defmethod clear-original-node-names ((self node-def-experimental-debug-info))
+  (cl:setf (cl:slot-value self 'original-node-names)
+           (cl:make-array
+            0
+            :element-type 'pb::%sf%
+            :fill-pointer 0 :adjustable cl:t))
+  (cl:values))
+(cl:export 'clear-original-node-names)
+
+
+
 (cl:defclass node-def (pb:protocol-buffer)
   (
   (name
@@ -113,10 +148,14 @@
               :element-type 'tensorflow.protobuf::node-def-attr-entry
               :fill-pointer 0 :adjustable cl:t)
    :type (cl:vector tensorflow.protobuf::node-def-attr-entry))
+  (experimental-debug-info
+   :writer (cl:setf experimental-debug-info)
+   :initform cl:nil
+   :type (cl:or cl:null tensorflow.protobuf::node-def-experimental-debug-info))
   (%has-bits%
    :accessor %has-bits%
    :initform 0
-   :type (cl:unsigned-byte 5))
+   :type (cl:unsigned-byte 6))
   (pb::%cached-size%
    :initform 0
    :type (cl:integer 0 #.(cl:1- cl:array-dimension-limit)))
@@ -210,6 +249,36 @@
             :fill-pointer 0 :adjustable cl:t))
   (cl:values))
 (cl:export 'clear-attr)
+
+(cl:export 'experimental-debug-info)
+
+(cl:unless (cl:fboundp 'experimental-debug-info)
+  (cl:defgeneric experimental-debug-info (proto)))
+(cl:defmethod experimental-debug-info ((self node-def))
+  (cl:let ((result (cl:slot-value self 'experimental-debug-info)))
+    (cl:when (cl:null result)
+      (cl:setf result (cl:make-instance 'tensorflow.protobuf::node-def-experimental-debug-info))
+      (cl:setf (cl:slot-value self 'experimental-debug-info) result))
+      (cl:setf (cl:ldb (cl:byte 1 5) (cl:slot-value self '%has-bits%)) 1)
+    result))
+
+(cl:defmethod (cl:setf experimental-debug-info) :after (x (self node-def))
+  (cl:declare (cl:ignore x))
+  (cl:setf (cl:ldb (cl:byte 1 5) (cl:slot-value self '%has-bits%)) 1))
+
+(cl:unless (cl:fboundp 'has-experimental-debug-info)
+  (cl:defgeneric has-experimental-debug-info (proto)))
+(cl:defmethod has-experimental-debug-info ((self node-def))
+  (cl:logbitp 5 (cl:slot-value self '%has-bits%)))
+(cl:export 'has-experimental-debug-info)
+
+(cl:unless (cl:fboundp 'clear-experimental-debug-info)
+  (cl:defgeneric clear-experimental-debug-info (proto)))
+(cl:defmethod clear-experimental-debug-info ((self node-def))
+  (cl:setf (cl:slot-value self 'experimental-debug-info) cl:nil)
+  (cl:setf (cl:ldb (cl:byte 1 5) (cl:slot-value self '%has-bits%)) 0)
+  (cl:values))
+(cl:export 'clear-experimental-debug-info)
 
 
 (cl:defmethod cl:print-object ((self node-def-attr-entry) stream)
@@ -313,6 +382,79 @@
 
 
 
+(cl:defmethod cl:print-object ((self node-def-experimental-debug-info) stream)
+  (cl:pprint-logical-block (stream cl:nil)
+    (cl:print-unreadable-object (self stream :type cl:t :identity cl:t)
+      (cl:format stream " ~_original-node-names: ~s" (original-node-names self))
+      ))
+  (cl:values))
+
+(cl:defmethod pb:clear ((self node-def-experimental-debug-info))
+  (cl:setf (cl:slot-value self 'original-node-names)
+           (cl:make-array
+            0
+            :element-type 'pb::%sf%
+            :fill-pointer 0 :adjustable cl:t))
+  (cl:setf (cl:slot-value self '%has-bits%) 0)
+  (cl:values))
+
+(cl:defmethod pb:is-initialized ((self node-def-experimental-debug-info))
+  cl:t)
+
+(cl:defmethod pb:octet-size ((self node-def-experimental-debug-info))
+  (cl:let ((size 0))
+    ;; repeated string original_node_names = 1[json_name = "originalNodeNames"];
+    (cl:let* ((x (cl:slot-value self 'original-node-names))
+              (length (cl:length x)))
+      (cl:incf size (cl:* 1 length))
+      (cl:dotimes (i length)
+        (cl:incf size (cl:let ((s (pb::%utf8-string-length% (cl:aref x i))))
+  (cl:+ s (varint:length32 s))))))
+    (cl:setf (cl:slot-value self 'pb::%cached-size%) size)
+    size))
+
+(cl:defmethod pb:serialize ((self node-def-experimental-debug-info) buffer index limit)
+  (cl:declare (cl:type com.google.base:octet-vector buffer)
+              (cl:type com.google.base:vector-index index limit)
+              (cl:ignorable buffer limit))
+  ;; repeated string original_node_names = 1[json_name = "originalNodeNames"];
+  (cl:let* ((v (cl:slot-value self 'original-node-names))
+            (length (cl:length v)))
+    (cl:dotimes (i length)
+      (cl:setf index (varint:encode-uint32-carefully buffer index limit 10))
+      (cl:setf index (wire-format:write-octets-carefully buffer index limit (cl:slot-value (cl:aref v i) 'pb::%octets%)))))
+  index)
+
+(cl:defmethod pb:merge-from-array ((self node-def-experimental-debug-info) buffer start limit)
+  (cl:declare (cl:type com.google.base:octet-vector buffer)
+              (cl:type com.google.base:vector-index start limit))
+  (cl:do ((index start index))
+      ((cl:>= index limit) index)
+    (cl:declare (cl:type com.google.base:vector-index index))
+    (cl:multiple-value-bind (tag new-index)
+        (varint:parse-uint32-carefully buffer index limit)
+      (cl:setf index new-index)
+      (cl:case tag
+        ;; repeated string original_node_names = 1[json_name = "originalNodeNames"];
+        ((10)
+          (cl:multiple-value-bind (value new-index)
+              (wire-format:read-octets-carefully buffer index limit)
+            (cl:vector-push-extend (pb:string-field value) (cl:slot-value self 'original-node-names))
+            (cl:setf index new-index)))
+        (cl:t
+          (cl:when (cl:= (cl:logand tag 7) 4)
+            (cl:return-from pb:merge-from-array index))
+          (cl:setf index (wire-format:skip-field buffer index limit tag)))))))
+
+(cl:defmethod pb:merge-from-message ((self node-def-experimental-debug-info) (from node-def-experimental-debug-info))
+  (cl:let ((v (cl:slot-value self 'original-node-names))
+           (vf (cl:slot-value from 'original-node-names)))
+    (cl:dotimes (i (cl:length vf))
+      (cl:vector-push-extend (cl:aref vf i) v)))
+)
+
+
+
 (cl:defmethod cl:print-object ((self node-def) stream)
   (cl:pprint-logical-block (stream cl:nil)
     (cl:print-unreadable-object (self stream :type cl:t :identity cl:t)
@@ -324,6 +466,8 @@
       (cl:when (cl:logbitp 3 (cl:slot-value self '%has-bits%))
         (cl:format stream " ~_device: ~s" (device self)))
       (cl:format stream " ~_attr: ~s" (attr self))
+      (cl:when (cl:logbitp 5 (cl:slot-value self '%has-bits%))
+        (cl:format stream " ~_experimental-debug-info: ~s" (experimental-debug-info self)))
       ))
   (cl:values))
 
@@ -334,6 +478,8 @@
     (cl:setf (cl:slot-value self 'op) (pb:string-field "")))
   (cl:when (cl:logbitp 3 (cl:slot-value self '%has-bits%))
     (cl:setf (cl:slot-value self 'device) (pb:string-field "")))
+  (cl:when (cl:logbitp 5 (cl:slot-value self '%has-bits%))
+    (cl:setf (cl:slot-value self 'experimental-debug-info) cl:nil))
   (cl:setf (cl:slot-value self 'input)
            (cl:make-array
             0
@@ -365,6 +511,10 @@
       (cl:incf size 1)
       (cl:incf size (cl:let ((s (pb::%utf8-string-length% (cl:slot-value self 'device))))
         (cl:+ s (varint:length32 s)))))
+    ;; .tensorflow.protobuf.NodeDef.ExperimentalDebugInfo experimental_debug_info = 6[json_name = "experimentalDebugInfo"];
+    (cl:when (cl:logbitp 5 (cl:slot-value self '%has-bits%))
+      (cl:let ((s (pb:octet-size (cl:slot-value self 'experimental-debug-info))))
+        (cl:incf size (cl:+ 1 s (varint:length32 s)))))
     ;; repeated string input = 3[json_name = "input"];
     (cl:let* ((x (cl:slot-value self 'input))
               (length (cl:length x)))
@@ -411,6 +561,11 @@
        (cl:setf index (varint:encode-uint32-carefully buffer index limit 42))
        (cl:setf index (varint:encode-uint32-carefully buffer index limit (cl:slot-value (cl:aref v i) 'pb::%cached-size%)))
        (cl:setf index (pb:serialize (cl:aref v i) buffer index limit))))
+  ;; .tensorflow.protobuf.NodeDef.ExperimentalDebugInfo experimental_debug_info = 6[json_name = "experimentalDebugInfo"];
+  (cl:when (cl:logbitp 5 (cl:slot-value self '%has-bits%))
+    (cl:setf index (varint:encode-uint32-carefully buffer index limit 50))
+    (cl:setf index (varint:encode-uint32-carefully buffer index limit (cl:slot-value (cl:slot-value self 'experimental-debug-info) 'pb::%cached-size%)))
+    (cl:setf index (pb:serialize (cl:slot-value self 'experimental-debug-info) buffer index limit)))
   index)
 
 (cl:defmethod pb:merge-from-array ((self node-def) buffer start limit)
@@ -461,6 +616,20 @@
               (cl:when (cl:not (cl:= index (cl:+ new-index length)))
                 (cl:error "buffer overflow"))
               (cl:vector-push-extend message (cl:slot-value self 'attr)))))
+        ;; .tensorflow.protobuf.NodeDef.ExperimentalDebugInfo experimental_debug_info = 6[json_name = "experimentalDebugInfo"];
+        ((50)
+          (cl:multiple-value-bind (length new-index)
+              (varint:parse-uint31-carefully buffer index limit)
+            (cl:when (cl:> (cl:+ new-index length) limit)
+              (cl:error "buffer overflow"))
+            (cl:let ((message (cl:slot-value self 'experimental-debug-info)))
+              (cl:when (cl:null message)
+                (cl:setf message (cl:make-instance 'tensorflow.protobuf::node-def-experimental-debug-info))
+                (cl:setf (cl:slot-value self 'experimental-debug-info) message)
+                (cl:setf (cl:ldb (cl:byte 1 5) (cl:slot-value self '%has-bits%)) 1))
+              (cl:setf index (pb:merge-from-array message buffer new-index (cl:+ new-index length)))
+              (cl:when (cl:not (cl:= index (cl:+ new-index length)))
+                (cl:error "buffer overflow")))))
         (cl:t
           (cl:when (cl:= (cl:logand tag 7) 4)
             (cl:return-from pb:merge-from-array index))
@@ -485,6 +654,13 @@
   (cl:when (cl:logbitp 3 (cl:slot-value from '%has-bits%))
     (cl:setf (cl:slot-value self 'device) (cl:slot-value from 'device))
     (cl:setf (cl:ldb (cl:byte 1 3) (cl:slot-value self '%has-bits%)) 1))
+  (cl:when (cl:logbitp 5 (cl:slot-value from '%has-bits%))
+    (cl:let ((message (cl:slot-value self 'experimental-debug-info)))
+      (cl:when (cl:null message)
+        (cl:setf message (cl:make-instance 'tensorflow.protobuf::node-def-experimental-debug-info))
+        (cl:setf (cl:slot-value self 'experimental-debug-info) message)
+        (cl:setf (cl:ldb (cl:byte 1 5) (cl:slot-value self '%has-bits%)) 1))
+     (pb:merge-from-message message (cl:slot-value from 'experimental-debug-info))))
 )
 
 

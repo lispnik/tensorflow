@@ -4,10 +4,10 @@
 ;;   change the package tensorflow; line to package tensorflow.protobuf;
 ;;   and change the import statments, when included, to remove the path
 ;;   load this system once to generate the corresponding lisp files
-;; (load "/Users/ungil/quicklisp/local-projects/tensorflow/tensorflow.asd")
+;; (load "~/quicklisp/local-projects/tensorflow/tensorflow.asd")
 ;; (asdf:load-system :tensorflow/protobuf :force t)
 ;;   copy these output files into the proto directory
-;; cp ~/.cache/common-lisp/sbcl-1.3.18-macosx-x64/Users/ungil/lisp/tensorflow/proto/*lisp ~/lisp/tensorflow/proto
+;; cp ~/.cache/common-lisp/sbcl-1.5.0-linux-x64/home/ungil/lisp/tensorflow/proto/*lisp ~/lisp/tensorflow/proto
 
 (defsystem #:tensorflow/protobuf
   :defsystem-depends-on (protobuf)

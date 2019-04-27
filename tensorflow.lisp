@@ -102,7 +102,7 @@
 
 (defun load-graph-def (bytes)
   (let ((graph-def (make-instance 'tf.pb:graph-def)))
-    (pb:merge-from-array graph-def bytes 0 (length raw))
+    (pb:merge-from-array graph-def bytes 0 (length bytes))
     graph-def))
 
 (defun create-graph (bytes)

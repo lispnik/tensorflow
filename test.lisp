@@ -17,7 +17,7 @@
 (5am:in-suite tensorflow-suite)
 
 (5am:test version
-  (5am:is (almost-equal (version) "1.2.0")))
+  (5am:is (almost-equal (version) "1.13.1")))
 
 (5am:test list-operations
   (5am:is (almost-equal (first (list-operations)) "Abort")))
